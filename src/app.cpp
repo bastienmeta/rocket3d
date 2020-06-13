@@ -2,6 +2,8 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
+#include "../include/shader.h"
+
 int main()
 {
     GLFWwindow* window;
@@ -30,9 +32,11 @@ int main()
     glfwMakeContextCurrent(window);
     
         if (!gladLoadGL()) {
-        std::cerr << "Unable to load OpenGL functions !" << std::endl;
         exit(EXIT_FAILURE);
     }
+    
+    Shader shader( "shaders/vs.glsl", "shaders/fs.glsl" );
+    shader.use();
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
