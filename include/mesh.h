@@ -11,7 +11,8 @@
 
 #include <iostream>
 
-using namespace glm;
+#include "../include/material.h"
+
 using namespace std;
 
 bool get_next_uncommented_line(std::ifstream &infile, std::string &result) {
@@ -25,21 +26,23 @@ bool get_next_uncommented_line(std::ifstream &infile, std::string &result) {
 
 class Mesh{
 public:
-	vector<vec3> V;
-	vector<vec3> Nv;
-	vector<vec3> Nf;	
-	vec3 color;
-	float shininess;
+	vector<glm::vec3> V;
+	vector<glm::vec3> Nv;
+	vector<glm::vec3> Nf;
 	vector<unsigned int> F;
-    bool loaded;
-    unsigned int nvertices, nfaces, nedges;	
+
+    unsigned int nvertices, nfaces, nedges;
+    
     GLuint vbo;
     GLuint vao;
     GLuint ebo;
     GLuint nbo;
+    
+    Material material;
+    
+    bool loaded;
 
-	Mesh(string path, vec3 color, float shiny=1.0):color(color),shininess(shiny){
-
+	Mesh(string path, Material& mat){
 		std::cout << path;
 		readOFF(path);
 		std::cout << "\tV: " << V.size() << "  F: " << F.size() << std::endl;
@@ -63,12 +66,9 @@ public:
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
 		glEnableVertexAttribArray(1);
 
-		glBindVertexArray(0);		
-	}
-
-	void setGlBuffers(GLuint color_buf, GLuint shiny_buf){
- 		glUniform3fv(color_buf, 1, value_ptr(color));
- 		glUniform1fv(shiny_buf, 1, &shininess); 		
+		glBindVertexArray(0);
+        
+        material = mat;
 	}
 
 	bool readOFF(string path){
@@ -98,7 +98,7 @@ public:
 
 	    Nv.reserve(nvertices);
 	    for(auto i=0; i < nvertices; ++i)
-        	Nv.emplace_back(vec3(0,0,0));
+        	Nv.emplace_back(glm::vec3(0,0,0));
 
 	    F.reserve(nfaces*3);
 	    Nf.reserve(nfaces);
@@ -110,7 +110,7 @@ public:
 	        unsigned int n;
 	        unsigned int index;
 	        info_stream >> n;
-	        vec3 points[n];
+	        glm::vec3 points[n];
 	        int indices[n];
 	        for (auto j = 0; j < n; ++j) {
 	            info_stream >> index;
@@ -119,7 +119,7 @@ public:
 	        	indices[j] = index;
 	        }
 
-	        vec3 nml = glm::cross(points[1]-points[0], points[2]-points[0]);
+	        glm::vec3 nml = glm::cross(points[1]-points[0], points[2]-points[0]);
 	        Nf.emplace_back(nml);
 
 	        for (auto j = 0; j < n; ++j) 
