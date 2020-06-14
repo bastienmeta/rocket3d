@@ -21,22 +21,27 @@ vec3 normals(vec3 pos) {
 }
 
 void main(){
-	vec3 dirlight = normalize(dirlight_world);
+    float spec_factor = 0.7;
+    float diff_factor = 0.7;
+    float amb_factor = 0.01;
+    
+    vec3 amb_color = vec3(1.0, 1.0, 1.0);
+    vec3 spec_color = vec3(1.0, 1.0, 1.0);
+    
+	//vec3 dirlight = normalize(dirlight_world);
 	vec3 normal_f = normals(pos);
 	vec3 normal_v = normalize(vNormal);
-	vec3 viewdir = normalize(eye_world - pos);
+	vec3 viewdir = normalize(eye_world - fragpos);
 	vec3 plight_dir = normalize(pointlight_world - pos);
 
-	float amb = 0.1;
-	vec3 ambient = amb * vec3(1.0, 1.0, 1.0);
-
-	float diff = max(dot(normal_f, plight_dir), 0.0);
+	float diff = max(dot(normal_v, plight_dir), 0.0);
 
 	vec3 R = reflect(-plight_dir, normal_v);
 	float spec = pow(max(0.0, dot(viewdir, R)), shininess);
 
-	vec3 diffuse = diff * mesh_diffuse;	
-	vec3 specular = spec * vec3(1.0, 1.0, 1.0);
+    vec3 ambient = amb_color * amb_factor;
+	vec3 diffuse = diff * mesh_diffuse * diff_factor;
+    vec3 specular = spec * spec_color * spec_factor;
 
 	FragColor = vec4(ambient + diffuse + specular, 1.0);
 }
