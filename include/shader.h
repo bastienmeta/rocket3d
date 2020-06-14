@@ -8,6 +8,7 @@
 #include <sstream>
 #include <iostream>
 
+// https://learnopengl.com/Getting-started/Shaders
 class Shader
 {
 public:

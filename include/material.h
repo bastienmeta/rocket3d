@@ -11,19 +11,27 @@
 #include <string>
 #include <glm/glm.hpp>
 
-#include "../include/shader.h"
+#include "shader.h"
 
 class Material{
 public:
-    Shader shader;
-    
+    Shader* shader;
     glm::vec3 diff_color;
     float shininess;
     
     Material(){}
+    
     Material(const char* vs, const char* fs, glm::vec3 diff_color, float shininess)
-    :shader(Shader(vs, fs)), diff_color(diff_color), shininess(shininess)
+    :shader(new Shader(vs, fs)), diff_color(diff_color), shininess(shininess)
     {}
+    
+    Material(Shader* shader, glm::vec3 diff_color, float shininess)
+    :shader(shader), diff_color(diff_color), shininess(shininess)
+    {}
+    
+    GLuint get_shader_id(){
+        return shader->ID;
+    }
 };
 
 #endif /* material_h */
