@@ -6,6 +6,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
+#include <chrono>
+typedef std::chrono::high_resolution_clock Clock;
 
 #include "../include/scene.h"
 
@@ -37,13 +39,23 @@ int main()
     }
   
     Scene scene;
-
+    auto t1 = Clock::now();
+    scene.render();
+    
     while (!glfwWindowShouldClose(window))
     {
-        scene.render();
+        auto t2 = Clock::now();
+        double dt = std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count();
+        
+        if(dt > 1000000.0/60.0){
+            t1 = t2;
+            
+            scene.physics_step(dt);
+            scene.render();
 
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+        }
     }
 
     glfwTerminate();

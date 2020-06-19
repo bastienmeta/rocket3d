@@ -1,37 +1,26 @@
-//
-//  material.h
-//  template
-//
-//  Created by bwailly on 14/06/2020.
-//
-
 #ifndef material_h
 #define material_h
 
 #include <string>
+#include <memory>
 #include <glm/glm.hpp>
 
 #include "shader.h"
 
 class Material{
 public:
-    Shader* shader;
-    glm::vec3 diff_color;
-    float shininess;
-    
     Material(){}
-    
-    Material(const char* vs, const char* fs, glm::vec3 diff_color, float shininess)
-    :shader(new Shader(vs, fs)), diff_color(diff_color), shininess(shininess)
-    {}
-    
-    Material(Shader* shader, glm::vec3 diff_color, float shininess)
-    :shader(shader), diff_color(diff_color), shininess(shininess)
-    {}
+    Material(std::shared_ptr<Shader> shader):shader(shader){}
+    virtual ~Material(){}
     
     GLuint get_shader_id(){
         return shader->ID;
     }
+    
+    virtual void set_uniforms() = 0;
+    
+protected:
+    std::shared_ptr<Shader> shader;
 };
 
 #endif /* material_h */

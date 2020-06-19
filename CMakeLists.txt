@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 
-project(template)
+project(RocketGame)
 
 set(CMAKE_CXX_STANDARD 11)
 if(CMAKE_GENERATOR STREQUAL Xcode)

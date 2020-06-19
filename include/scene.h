@@ -9,15 +9,17 @@
 #define scene_h
 
 #include <vector>
+#include <memory>
 #include <glm/glm.hpp>
 
-#include "mesh.h"
-#include "material.h"
+#include "spaceobject.h"
+#include "shadermanager.h"
 
 class Scene{
 public:
     Scene();
     
+    void physics_step(double dt);
     void render();
     
 private:    
@@ -29,7 +31,8 @@ private:
     glm::mat4 view;
     glm::mat4 VP;
     
-    std::vector<Mesh*> objects;
+    ShaderManager shader_manager;
+    std::vector<std::shared_ptr<SpaceObject>> objects;
 };
 
 #endif /* scene_h */

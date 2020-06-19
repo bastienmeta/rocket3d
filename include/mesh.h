@@ -13,21 +13,9 @@
 
 class Mesh{
 public:
-    Material* material;
-    bool loaded;
-
-    Mesh(std::string path, Material* mat);
+    Mesh(std::string path);
 
     bool readOFF(std::string path);
-    GLuint get_shader_id(){ return material->get_shader_id(); }
-    
-    void translate(glm::vec3 vec);
-    void rotate(glm::vec3 axis, float angle);
-    void scale_xyz(glm::vec3 scale);
-    void scale(float factor);
-    
-    glm::mat4& get_model(){ return model; };
-    
     void draw();
     
 private:
@@ -42,8 +30,8 @@ private:
     GLuint vao;
     GLuint ebo;
     GLuint nbo;
-
-    glm::mat4 model;
+    
+    bool loaded;
 };
 
 #endif

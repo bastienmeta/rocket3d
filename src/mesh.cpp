@@ -1,13 +1,11 @@
 #include "../include/mesh.h"
-#include <glm/gtx/string_cast.hpp>
+
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/transform.hpp>
 
 #include <iostream>
 using namespace std;
 
-Mesh::Mesh(string path, Material* mat)
-:material(mat), model(glm::mat4(1.0))
+Mesh::Mesh(string path)
 {
     std::cout << path;
     readOFF(path);
@@ -105,22 +103,6 @@ bool Mesh::readOFF(string path){
 
     infile.close();
     return (loaded = true);
-}
-
-void Mesh::translate(glm::vec3 vec){
-    model = glm::translate(model, vec);
-}
-
-void Mesh::rotate(glm::vec3 axis, float angle){
-    model = glm::rotate(model, angle, axis);
-}
-
-void Mesh::scale(float factor){
-    model = glm::scale(model, glm::vec3(factor, factor, factor));
-}
-
-void Mesh::scale_xyz(glm::vec3 scale){
-    model = glm::scale(model, scale);
 }
 
 void Mesh::draw(){
