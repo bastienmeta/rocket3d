@@ -3,7 +3,7 @@
 #include <glm/gtx/string_cast.hpp>
 
 SpaceObject::SpaceObject(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> mat, double mass, double scale)
-:mesh(mesh), material(mat), mass(mass), rotation_axis(glm::vec3(0.0, 1.0, 0.0)), rotation_speed(0.0),
+:mesh(mesh), material(mat), mass(mass), rotation_axis(glm::vec3(0.0, 1.0, 0.0)), rotation_speed(0.0), radius(scale),
 T(glm::mat4(1.0)), R(glm::mat4(1.0)), S(glm::mat4(scale)), model(glm::mat4(1.0))
 {
     S[3][3] = 1.0;
@@ -35,13 +35,25 @@ double SpaceObject::get_mass(){
     return mass;
 }
 
-void SpaceObject::apply_rotation(double dt){
-    rotate(rotation_axis, rotation_speed * dt);
+double SpaceObject::get_radius(){
+    return radius;
 }
 
-void SpaceObject::apply_acceleration(glm::vec3 &a, double dt){
-    velocity += a * (float)dt;
-    translate(velocity);
+void SpaceObject::register_rotation(double a, double dt, float speed){
+    rotation_speed += a * (float)dt * speed;
+}
+
+void SpaceObject::apply_rotation(float speed, double dt){
+    rotate(rotation_axis, rotation_speed * speed * (float)dt);
+}
+
+void SpaceObject::register_acceleration(glm::vec3 &a, double dt, float speed){
+    velocity += a * (float)dt * speed;
+}
+
+void SpaceObject::apply_acceleration(float speed, double dt){
+    glm::vec3 v2 = velocity * speed * (float)dt;
+    translate(v2);
 }
 
 void SpaceObject::set_uniforms(){

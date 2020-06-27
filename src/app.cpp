@@ -1,63 +1,9 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#include <iostream>
-#include <chrono>
-typedef std::chrono::high_resolution_clock Clock;
-
-#include "../include/scene.h"
-
-using namespace glm;
+#include "../include/window.h"
 
 int main()
 {
-    GLFWwindow* window;
-    if (!glfwInit())
-        return -1;
-
-#ifdef __APPLE__
-  glfwWindowHint (GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint (GLFW_CONTEXT_VERSION_MINOR, 2);
-  glfwWindowHint (GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-  glfwWindowHint (GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#endif
-
-    window = glfwCreateWindow(800, 800, "Coucou", nullptr, nullptr);
-    if (!window)
-    {
-        glfwTerminate();
-        return -1;
-    }
-
-    glfwMakeContextCurrent(window);
-    if (!gladLoadGL()) {
-        exit(EXIT_FAILURE);
-    }
-  
-    Scene scene;
-    auto t1 = Clock::now();
-    scene.render();
+    Window window(800, 800);
+    window.main_loop();
     
-    while (!glfwWindowShouldClose(window))
-    {
-        auto t2 = Clock::now();
-        double dt = std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count();
-        
-        if(dt > 1000000.0/60.0){
-            t1 = t2;
-            
-            scene.physics_step(dt);
-            scene.render();
-
-            glfwSwapBuffers(window);
-            glfwPollEvents();
-        }
-    }
-
-    glfwTerminate();
     return 0;
 }

@@ -22,8 +22,13 @@ public:
     // mechanics
     glm::vec3& get_position();
     double get_mass();
-    void apply_acceleration(glm::vec3& a, double dt);
-    void apply_rotation(double dt);
+    double get_radius();
+    // add a force on this object
+    void register_acceleration(glm::vec3& a, double dt, float speed);
+    void register_rotation(double a, double dt, float speed);
+    // apply all forces on this object for this step
+    void apply_acceleration(float speed, double dt);
+    void apply_rotation(float speed, double dt);
     
     // graphical
     GLuint get_shader_id();
@@ -31,7 +36,7 @@ public:
     glm::mat4& get_model();
     void draw();
     
-private:
+protected:
     // graphical
     std::shared_ptr<Mesh> mesh;
     std::shared_ptr<Material> material;
@@ -42,6 +47,7 @@ private:
     glm::vec3 velocity;
     glm::vec3 rotation_axis;
     double rotation_speed;
+    double radius;
         
     // transforms
     void translate(glm::vec3& vec);

@@ -14,9 +14,9 @@
 #include "spaceobject.h"
 
 namespace Mechanics{
-    namespace Newton{
-        const double G = 6.67430e-11;
-        glm::vec3 compute_acceleration(std::shared_ptr<SpaceObject> obj, std::shared_ptr<SpaceObject> other);
-    }
+    const double G = 6.67430e-11;
+    glm::vec3 compute_gravity_acceleration(std::shared_ptr<SpaceObject> obj, std::shared_ptr<SpaceObject> other);
+    double compute_angular_acceleration(std::shared_ptr<SpaceObject> obj, double push);
+    double compute_circular_orbit_velocity(std::shared_ptr<SpaceObject> obj, std::shared_ptr<SpaceObject> other);
 };
 #endif /* newton_h */

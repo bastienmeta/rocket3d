@@ -14,6 +14,7 @@
 
 #include "spaceobject.h"
 #include "shadermanager.h"
+#include "ship.h"
 
 class Scene{
 public:
@@ -21,6 +22,11 @@ public:
     
     void physics_step(double dt);
     void render();
+    
+    void press(){ objects[1]->set_position(glm::vec3(1, 0, 0)); }
+    
+    std::shared_ptr<Ship> ship;
+    const float sim_speed = 1000.0f;
     
 private:    
     glm::vec3 camera_position;
