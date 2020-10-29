@@ -49,18 +49,18 @@ VP( proj * view )
     std::shared_ptr<Mesh> cone_mesh = std::make_shared<Mesh>("../../meshes/cone.off");
     
     // objects
-    std::shared_ptr<SpaceObject> sun = std::make_shared<SpaceObject>(sphere_mesh, light_mat, 1000.0, 0.5);
+    std::shared_ptr<SpaceObject> sun = std::make_shared<SpaceObject>(sphere_mesh, light_mat, 1e6, 0.5);
     
-    std::shared_ptr<SpaceObject> tchouri = std::make_shared<SpaceObject>(tchouri_mesh, eerie_mat, 0.02, 0.3);
+    std::shared_ptr<SpaceObject> tchouri = std::make_shared<SpaceObject>(tchouri_mesh, eerie_mat, 1e1, 0.3);
     tchouri->set_position(glm::vec3(9.0, 3.0, 0.0));
-    tchouri->set_velocity(0.0001f*glm::vec3(0.3, -0.9, 0.0));
+    tchouri->set_velocity(0.01f*glm::vec3(0.3, -0.9, 0.0));
     tchouri->set_rotation(glm::vec3(0.0, 0.0, 1.0), 1e-4);
     
-    std::shared_ptr<SpaceObject> eerie_planet = std::make_shared<SpaceObject>(sphere_mesh, weird_mat, 0.01, 0.5);
+    std::shared_ptr<SpaceObject> eerie_planet = std::make_shared<SpaceObject>(sphere_mesh, weird_mat, 1e2, 0.5);
     eerie_planet->set_position(glm::vec3(2.0, 6.0, 0.0));
-    eerie_planet->set_velocity(0.0001f*glm::vec3(0.6, -0.2, 0.0));
+    eerie_planet->set_velocity(0.01f*glm::vec3(0.6, -0.2, 0.0));
     
-    std::shared_ptr<SpaceObject> eerie_moon = std::make_shared<SpaceObject>(sphere_mesh, weird_mat, 0.0001, 0.1);
+    std::shared_ptr<SpaceObject> eerie_moon = std::make_shared<SpaceObject>(sphere_mesh, weird_mat, 1e1, 0.1);
     eerie_moon->set_position(glm::vec3(0.0, 1.0, 0.0));
     glm::vec3 vel = glm::vec3(1.0, 0.0, 0.0);
     vel *= (float)Mechanics::compute_circular_orbit_velocity(eerie_moon, sun);
@@ -68,13 +68,13 @@ VP( proj * view )
     
     ship = std::make_shared<Ship>(cone_mesh, ship_mat, 1.0, 2.0);
     ship->set_position(glm::vec3(10.0, 0.0, 0.0));
-    ship->set_velocity(0.0001f*glm::vec3(0.0, -1.0, 0.0));
+    ship->set_velocity(0.01f*glm::vec3(0.0, -1.0, 0.0));
     
     objects.push_back(sun);
-    objects.push_back(tchouri);
-    objects.push_back(eerie_planet);
+//    objects.push_back(tchouri);
+//    objects.push_back(eerie_planet);
     objects.push_back(eerie_moon);
-    objects.push_back(ship);
+//    objects.push_back(ship);
 }
 
 void Scene::physics_step(double dt){
@@ -82,11 +82,16 @@ void Scene::physics_step(double dt){
         for(auto other: objects){
             if(obj != other){
                 glm::vec3 accel = Mechanics::compute_gravity_acceleration(obj, other);
-                obj->register_acceleration(accel, dt, sim_speed);
+                obj->register_acceleration(accel);
+                
+//                if(obj->collides(other)){
+//                    obj->resolve_collision(other);
+//                }
             }
         }
-        obj->apply_rotation(sim_speed, dt);
-        obj->apply_acceleration(sim_speed, dt);
+        
+        obj->apply_rotation(dt);
+        obj->apply_acceleration(dt);
     }
 }
 

@@ -42,8 +42,6 @@ Window::Window(int width, int height)
 //    event_manager->add_binding(GLFW_KEY_SPACE, cb);
     
     time_last_rendered = Clock::now();
-    scene->physics_step(0.);
-    scene->render();
 }
 
 Window::~Window(){
@@ -54,32 +52,33 @@ void Window::main_loop(){
     std::shared_ptr<Ship> ship = scene->ship;
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GLFW_TRUE);
     
+    double leftover = 0.0;
     while (!glfwWindowShouldClose(window))
     {
         auto now = Clock::now();
-        double dt = std::chrono::duration_cast<std::chrono::nanoseconds>(now - time_last_rendered).count();
-        
-        if(dt > 1000000000/60.0){
+        double dt = leftover + std::chrono::duration_cast<std::chrono::milliseconds>(now - time_last_rendered).count();
+
+
+        if(dt > 1000/60.0){
+            leftover = dt - 1000/60.0;
+            dt = 1000/60.0;
+            
             time_last_rendered = now;
             
-            scene->physics_step(1.0);
+            scene->physics_step(dt);
             scene->render();
             
             int state = glfwGetKey(window, GLFW_KEY_SPACE);
             if (state == GLFW_PRESS)
-                ship->thrust(dt, scene->sim_speed);
+                ship->thrust();
             
             state = glfwGetKey(window, GLFW_KEY_LEFT);
-            if (state == GLFW_PRESS){
-                double a = Mechanics::compute_angular_acceleration(ship, -1e-15);
-                ship->yaw(a, dt, scene->sim_speed);
-            }
+            if (state == GLFW_PRESS)
+                ship->yaw(Ship::LEFT);
             
             state = glfwGetKey(window, GLFW_KEY_RIGHT);
-            if (state == GLFW_PRESS){
-                double a = Mechanics::compute_angular_acceleration(ship, 1e-15);
-                ship->yaw(a, dt, scene->sim_speed);
-            }
+            if (state == GLFW_PRESS)
+                ship->yaw(Ship::RIGHT);
 
             glfwSwapBuffers(window);
             glfwPollEvents();

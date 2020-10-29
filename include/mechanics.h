@@ -16,7 +16,7 @@
 namespace Mechanics{
     const double G = 6.67430e-11;
     glm::vec3 compute_gravity_acceleration(std::shared_ptr<SpaceObject> obj, std::shared_ptr<SpaceObject> other);
-    double compute_angular_acceleration(std::shared_ptr<SpaceObject> obj, double push);
+    double compute_angular_momentum(std::shared_ptr<SpaceObject> obj);
     double compute_circular_orbit_velocity(std::shared_ptr<SpaceObject> obj, std::shared_ptr<SpaceObject> other);
 };
 #endif /* newton_h */

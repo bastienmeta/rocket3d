@@ -24,17 +24,21 @@ public:
     double get_mass();
     double get_radius();
     // add a force on this object
-    void register_acceleration(glm::vec3& a, double dt, float speed);
-    void register_rotation(double a, double dt, float speed);
+    void register_acceleration(glm::vec3& a);
+    void register_rotation(double a);
     // apply all forces on this object for this step
-    void apply_acceleration(float speed, double dt);
-    void apply_rotation(float speed, double dt);
+    void apply_acceleration(double dt);
+    void apply_rotation(double dt);
     
     // graphical
     GLuint get_shader_id();
     void set_uniforms();
     glm::mat4& get_model();
     void draw();
+    
+    // collisions
+    virtual bool collides(std::shared_ptr<SpaceObject> other);
+    virtual void resolve_collision(std::shared_ptr<SpaceObject> other);
     
 protected:
     // graphical
@@ -43,11 +47,16 @@ protected:
     
     // mechanics
     double mass;
+    double radius;
+
     glm::vec3 position;
     glm::vec3 velocity;
+    glm::vec3 acceleration;
+    glm::vec3 new_acceleration;
+    
     glm::vec3 rotation_axis;
     double rotation_speed;
-    double radius;
+    double rotation_acc;
         
     // transforms
     void translate(glm::vec3& vec);

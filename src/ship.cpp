@@ -13,17 +13,24 @@ Ship::Ship(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> mat, double mas
     rotation_speed = 0;
 }
 
-glm::vec3 Ship::get_direction(){
+glm::vec3 Ship::direction(){
     return glm::normalize((R * glm::vec4(0.0, 0.0, 1.0, 1.0)).xyz());
 }
 
-void Ship::thrust(float dt, float speed){
-    glm::vec3 acc = power * get_direction();
-    register_acceleration(acc , dt, speed);
+void Ship::thrust(){
+    glm::vec3 acc = thrust_power * direction();
+    register_acceleration(acc);
 }
 
-void Ship::yaw(double a, float dt, float speed){
-    register_rotation(a, dt, speed);
+void Ship::yaw(Direction d){
+    if(d == LEFT)
+        register_rotation(-rcs_power * angular_momentum());
+    else
+        register_rotation(rcs_power * angular_momentum());
+}
+
+double Ship::angular_momentum(){
+    return mass * radius * radius;
 }
 
 #undef GLM_FORCE_SWIZZLE

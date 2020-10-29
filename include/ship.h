@@ -5,13 +5,17 @@
 
 class Ship : public SpaceObject{
 public:
+    enum Direction {LEFT, RIGHT};
     Ship(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> mat, double mass, double scale);
-    glm::vec3 get_direction();
-    void thrust(float dt, float speed);
-    void yaw(double a, float dt, float speed);
+    void thrust();
+    void yaw(Direction d);
     
 private:
-    float power = 1e-14;
+    float thrust_power = 1e-5;
+    float rcs_power = 1e-6;
+    
+    double angular_momentum();
+    glm::vec3 direction();
 };
 
 #endif
